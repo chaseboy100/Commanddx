@@ -144,31 +144,7 @@ $sender->sendMessage($this->fts .TF::RED . "Syntax /nv on|off");
 	     }
     }
 }
-		
-if($cmd->getName() == "speed") {
-	  if($sender instanceof Player) {
-		if($sender->hasPermission("speed.use")){
-			  if($args[0] == "on"){
-				$sender->addEffect(new EffectInstance(Effect::getEffect(Effect::SPEED), (99999999*20), (1), (false)));
-				$sender->sendMessage($this->fts . TF::GREEN . " Speed activated");
-                return true;
-				}
-			  if($args[0] == "off") {
-				if($sender->hasEffect(Effect::SPEED)) {
-				    $sender->removeEffect(Effect::SPEED);
-				$sender->sendMessage($this->fts . TF::RED . " Speed was deactivated");
-				}
-                    
-		     }
-		  }else{
-		  $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
-		  }else{
-$sender->sendMessage($this->fts .TF::RED . "Syntax /speed on|off");
-	  return true;
-	     }
-    }
-}
-		
+
 if($cmd->getName() == "vanish") {
 	  if($sender instanceof Player) {
 		if($sender->hasPermission("vanish.use")) {
