@@ -1,0 +1,7 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/bigbozzlmao4035/Commanddx
+branches:
+- master
+projects:
+  Commanddx:
+    path: ""
+...
