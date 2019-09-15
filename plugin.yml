@@ -1,7 +1,7 @@
 name: Commanddx
 version: 1.4.0
 api: 3.9.3
-main: bigbozzlmao4035\MoreCommands\Main
+main: bigbozzlmao4035\Commanddx\Main
 author: esh123cookie
 commands:
   heal:
