@@ -1,5 +1,5 @@
 <?php
-namespace esh123cookie\Commandx;
+namespace bigbozzlmao4035\Commanddx;
 use pocketmine\entity\Effect;
 use pocketmine\entity\EffectInstance;
 use pocketmine\plugin\PluginBase;
@@ -9,16 +9,30 @@ use pocketmine\utils\TextFormat as TF;
 use pocketmine\Player;
 use pocketmine\level\sound\PopSound;
 use pocketmine\item\Item;
-	public $fts = "§7[§bExtraCommands§7]";
+class Main extends PluginBase{
+	 
+	public $fts = "§4[§bCommanddx§4]";
  
 	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args): bool {
     
-  
+   if($cmd->getName() == "food") {
+     if($sender instanceof Player) {
+     if($sender->hasPermission("food.use")) {    
+     	$sender->getInventory()->addItem(Item::get(Item::BREAD, 0, 8));
+     	$sender->getlevel()->addSound(new PopSound($sender));
+         $sender->sendMessage($this->fts . TF::GREEN . "You have got bread!");
+	 }else{ 
+	 $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
+            }
+         }
+       return true;
+    }
+	 
    if($cmd->getName() == "heal") {
    	if($sender instanceof Player) {
    	 if($sender->hasPermission("heal.use")) {
    	    $sender->setHealth(20);
-            $sender->sendMessage($this->fts . TF::GREEN . " You have been healed!");
+            $sender->sendMessage($this->fts . TF::GREEN . " Your health is full!");
             }else{
             $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
                }
@@ -120,14 +134,73 @@ foreach($this->getServer()->getOnlinePlayers() as $player) {
             }
           return true;
       }	
-© 2019 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-Pricing
-API
-Training
-Blog
+		
+if($cmd->getName() == "nv") {
+	  if($sender instanceof Player) {
+		if($sender->hasPermission("nv.use")){
+			  if($args[0] == "on"){
+				$sender->addEffect(new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), (99999999*20), (1), (false)));
+				$sender->sendMessage($this->fts . TF::GREEN . " Night vision activated");
+                return true;
+				}
+			  if($args[0] == "off") {
+				if($sender->hasEffect(Effect::NIGHT_VISION)) {
+				    $sender->removeEffect(Effect::NIGHT_VISION);
+				$sender->sendMessage($this->fts . TF::RED . " Night vision deactivated");
+				}
+                    
+		     }
+		  }else{
+		  $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
+		  }else{
+$sender->sendMessage($this->fts .TF::RED . "Syntax /nv on|off");
+	  return true;
+	     }
+    }
+}
+if($cmd->getName() == "vanish") {
+	  if($sender instanceof Player) {
+		if($sender->hasPermission("vanish.use")) {
+			  if($args[0] == "on") {
+                                $sender->setDisplayName($sender->getName());
+				$sender->addEffect(new EffectInstance(Effect::getEffect(Effect::INVISIBILITY), (99999999*20), (1), (false)));
+				$sender->sendMessage($this->fts . TF::GREEN . " Vanish activated");
+                                        return true;
+				}
+			  if($args[0] == "off") {
+				if($sender->hasEffect(Effect::INVISIBILITY)) {
+				    $sender->removeEffect(Effect::INVISIBILITY);
+				$sender->sendMessage($this->fts . TF::RED . " Vanish deactivated");
+				}
+                    
+		     }
+		  }else{
+		  $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
+		  }else{
+$sender->sendMessage($this->fts .TF::RED . "Syntax /vanish on|off");
+	  return true;
+	    }
+}
+}
+	if($cmd->getName() == "fly"){
+        if($sender instanceof Player){
+        if($sender->hasPermission("fly.use")){
+			  if($args[0] == "on") {
+				$sender->setAllowFlight(true);
+				$sender->sendMessage($this->fts . TF::GREEN . " Flymode activated");
+				}
+			  if($args[0] == "off") {
+				$sender->setAllowFlight(false);
+				$sender->sendMessage($this->fts . TF::RED . " Flymode deactivated");
+				}
+		     }
+		  }else{
+		  $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
+                  }else{
+$sender->sendMessage($this->fts .TF::RED . "Syntax /fly on|off");
+	  return true;
+	     }
+	  }
+  return true;
+    }
+}
