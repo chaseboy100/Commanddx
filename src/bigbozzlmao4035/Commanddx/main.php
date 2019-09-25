@@ -6,7 +6,8 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
 use pocketmine\utils\TextFormat as TF;
-class Main extends PluginBase {
+class Main extends PluginBase{
+    
     
     CONST ADD = 0;
     CONST DEL = 1;
