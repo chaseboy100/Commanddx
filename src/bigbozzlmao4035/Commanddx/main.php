@@ -1,5 +1,5 @@
 <?php
-namespace bigbozzlmao4035/Commanddx;
+namespace cmd;
 use pocketmine\Server;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
