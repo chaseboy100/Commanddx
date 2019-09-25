@@ -1,125 +1,116 @@
 <?php
-namespace bigbozzlmao4035\Commanddx;
-use pocketmine\entity\Effect;
-use pocketmine\entity\EffectInstance;
-use pocketmine\plugin\PluginBase;
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
-use pocketmine\utils\TextFormat as TF;
+namespace jasonwynn10\TagMods;
+use _64FF00\PureChat\PureChat;
 use pocketmine\Player;
-use pocketmine\level\sound\PopSound;
-use pocketmine\item\Item;
-class Main extends PluginBase{
-	 
-	public $fts = "§4[§bCommanddx§4]";
- 
-	public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args): bool {
+use pocketmine\plugin\PluginBase;
+use pocketmine\command\CommandSender;
+use pocketmine\command\Command;
+use pocketmine\utils\TextFormat as TF;
+class Main extends PluginBase {
     
-   if($cmd->getName() == "food") {
-     if($sender instanceof Player) {
-     if($sender->hasPermission("food.use")) {    
-     	$sender->getInventory()->addItem(Item::get(Item::BREAD, 0, 8));
-     	$sender->getlevel()->addSound(new PopSound($sender));
-         $sender->sendMessage($this->fts . TF::GREEN . "You have got bread!");
-	 }else{ 
-	 $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
-            }
-         }
-       return true;
+    CONST ADD = 0;
+    CONST DEL = 1;
+    
+    /** @var PureChat $pureChat */
+    private $pureChat = null;
+    
+    public function onEnable() {
+        $this->saveDefaultConfig();
+        if(!($this->pureChat = $this->getServer()->getPluginManager()->getPlugin("PureChat")) instanceof PureChat) {
+            $this->getLogger()->error("PureChat is not installed!");
+            $this->setEnabled(false);
+            return;
+        }
+        $this->getLogger()->notice(TF::GREEN."Enabled!");
     }
-	 
-   if($cmd->getName() == "heal") {
-   	if($sender instanceof Player) {
-   	 if($sender->hasPermission("heal.use")) {
-   	    $sender->setHealth(20);
-            $sender->sendMessage($this->fts . TF::GREEN . " Your health is full!");
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
+        if(strtolower($command) == "addprefix") {
+            if(!$sender instanceof Player) return true;
+            $prefix = "";
+            for($i = 1;$i < count($args); $i++) {
+                $prefix .= $args[$i];
+            }
+            $this->pureChat->setPrefix($prefix, $sender);
+        }
+        if(strtolower($command) == "addsuffix") {
+            if(!$sender instanceof Player) return true;
+            $suffix = "";
+            for($i = 1;$i < count($args); $i++) {
+                $suffix .= $args[$i];
+            }
+            $this->pureChat->setSuffix($suffix, $sender);
+        }
+        if(strtolower($command) == "delprefix") {
+            if($sender instanceof Player) {
+                if(count($args) == 1) {
+                    if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
+                        $sender->sendMessage(TF::YELLOW."That player may not be online!");
+                        return true;
+                    }
+                    $this->pureChat->setPrefix("", $player);
+                }else{
+                    $this->pureChat->setPrefix("", $sender);
+                }
             }else{
-            $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
-               }
+                if(count($args) == 1) {
+                    if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
+                        $sender->sendMessage(TF::YELLOW."That player may not be online!");
+                        return true;
+                    }
+                    $this->pureChat->setPrefix("", $player);
+                }
             }
-          return true;
-      }
-         
-    if($cmd->getName() == "feed") {
-   	if($sender instanceof Player) {
-     	if($sender->hasPermission("feed.use")) {
-   	    $sender->setFood(20);
-            $sender->sendMessage($this->fts . TF::GREEN . " Your food is full!");
-           }else{
-           $sender->sendMessage($this->fts . TF::RED . " You are not allowed to use this command");
-              }
-            }
-          return true;
-      }
-	 
-	   if($cmd->getName() == "gms") {
-   	if($sender instanceof Player) {
-   	 if($sender->hasPermission("gms.use")) {
-   	    $sender->setGamemode(0);
-            $sender->sendMessage($this->fts . TF::GREEN . "You have set your gamemode to survival mode!");
+        }
+        if(strtolower($command) == "delsuffix") {
+            if($sender instanceof Player) {
+                if(count($args) == 1) {
+                    if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
+                        $sender->sendMessage(TF::YELLOW."That player may not be online!");
+                        return true;
+                    }
+                    $this->pureChat->setSuffix("", $player);
+                }else{
+                    $this->pureChat->setSuffix("", $sender);
+                }
             }else{
-            $sender->sendMessage($this->fts . TF::RED . "You are not allowed to use this command");
-               }
+                if(count($args) == 1) {
+                    if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
+                        $sender->sendMessage(TF::YELLOW."That player may not be online!");
+                        return true;
+                    }
+                    $this->pureChat->setSuffix("", $player);
+                }
             }
-          return true;
-      }
-       
-         if($cmd->getName() == "gmc") {
-   	if($sender instanceof Player) {
-   	 if($sender->hasPermission("gmc.use")) {
-   	    $sender->setGamemode(1);
-            $sender->sendMessage($this->fts . TF::GREEN . " You have set your gamemode to creative mode!");
-            }else{
-            $sender->sendMessage($this->fts . TF::RED . "You are not allowed to use this command");
-               }
+        }
+        if(strtolower($command) == "giveprefix") {
+            if(count($args) >= 1) {
+                if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
+                    $sender->sendMessage(TF::YELLOW."That player may not be online!");
+                    return true;
+                }
+                $prefix = "";
+                for($i = 1;$i < count($args); $i++) {
+                    $prefix .= $args[$i];
+                }
+                $this->pureChat->setPrefix($prefix, $args[0]);
             }
-          return true;
-      }
-       
-               if($cmd->getName() == "gma") {
-   	if($sender instanceof Player) {
-   	 if($sender->hasPermission("gma.use")) {
-   	    $sender->setGamemode(2);
-            $sender->sendMessage($this->fts . TF::GREEN . " You have set your gamemode to creative mode!");
-            }else{
-            $sender->sendMessage($this->fts . TF::RED . "You are not allowed to use this command");
-               }
+        }
+        if(strtolower($command) == "givesuffix") {
+            if(count($args) >= 1) {
+                if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
+                    $sender->sendMessage(TF::YELLOW."That player may not be online!");
+                    return true;
+                }
+                $suffix = "";
+                for($i = 1;$i < count($args); $i++) {
+                    $suffix .= $args[$i];
+                }
+                $this->pureChat->setSuffix($suffix, $args[0]);
             }
-          return true;
-      }
-		 
-if($cmd->getName() == "gmspc") {
-   	if($sender instanceof Player) {
-   	 if($sender->hasPermission("gmspc.use")) {
-   	    $sender->setGamemode(3);
-            $sender->sendMessage($this->fts . TF::GREEN . " You have set your gamemode to spectator mode!");
-            }else{
-            $sender->sendMessage($this->fts . TF::RED . "You are not allowed to use this command");
-               }
-            }
-          return true;
-      }
-      if($cmd->getName() == "day") {
-   	if($sender instanceof Player) {
-   	 if($sender->hasPermission("day.use")) {
-   	    $sender->getLevel()->setTime(6000);
-            $sender->sendMessage($this->fts . TF::GREEN . " You have set the time to day!");
-            }else{
-            $sender->sendMessage($this->fts . TF::RED . "You are not allowed to use this command");
-               }
-            }
-          return true;
-      } 
-		 
-if($cmd->getName() == "cclear") {
-foreach($this->getServer()->getOnlinePlayers() as $player) {
-        $player->sendMessage("n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nn\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n $this->fts . TF::GREEN . Chat cleared");
-   	if($sender instanceof Player) {
-   	 if($sender->hasPermission("ccclear.use")) {
-            }else{
-            $sender->sendMessage($this->fts . TF::RED . "You are not allowed to use this command");
-               }
-            }
-          return true;
-      }
-  }	
+        }
+        return true;
+    }
+    public function onDisable() {
+        $this->getLogger()->notice(TF::GREEN."Disabled!");
+    }
+}
