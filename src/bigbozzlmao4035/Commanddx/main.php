@@ -1,116 +1,71 @@
 <?php
-namespace bigbozzlmao4035\Commanddx;
-use _64FF00\PureChat\PureChat;
+namespace bigbozzlmao4035/Commanddx;
+use pocketmine\Server;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
-use pocketmine\utils\TextFormat as TF;
-class Main extends PluginBase {
-    
-    CONST ADD = 0;
-    CONST DEL = 1;
-    
-    /** @var PureChat $pureChat */
-    private $pureChat = null;
-    
+use pocketmine\command\CommandSender;
+use pocketmine\event\Listener;
+use pocketmine\utils\TextFormat;
+use pocketmine\entity\Effect;
+use pocketmine\entity\Living;
+use pocketmine\entity\EffectInstance;
+class Main extends PluginBase implements Listener {
     public function onEnable() {
-        $this->saveDefaultConfig();
-        if(!($this->pureChat = $this->getServer()->getPluginManager()->getPlugin("PureChat")) instanceof PureChat) {
-            $this->getLogger()->error("PureChat is not installed!");
-            $this->setEnabled(false);
-            return;
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);   
+        $api = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+        if(!$api){
+            $this->getServer()->getLogger()->alert("You must download plugin Form API here : https://poggit.pmmp.io/ci/jojoe77777/FormAPI/FormAPI");
+            $this->getServer()->shutdown();
+        } else {
+        $this->getLogger()->info(TextFormat::GREEN . "NightVision UI On");
         }
-        $this->getLogger()->notice(TF::GREEN."Enabled!");
-    }
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
-        if(strtolower($command) == "addprefix") {
-            if(!$sender instanceof Player) return true;
-            $prefix = "";
-            for($i = 1;$i < count($args); $i++) {
-                $prefix .= $args[$i];
-            }
-            $this->pureChat->setPrefix($prefix, $sender);
-        }
-        if(strtolower($command) == "addsuffix") {
-            if(!$sender instanceof Player) return true;
-            $suffix = "";
-            for($i = 1;$i < count($args); $i++) {
-                $suffix .= $args[$i];
-            }
-            $this->pureChat->setSuffix($suffix, $sender);
-        }
-        if(strtolower($command) == "delprefix") {
-            if($sender instanceof Player) {
-                if(count($args) == 1) {
-                    if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
-                        $sender->sendMessage(TF::YELLOW."That player may not be online!");
-                        return true;
-                    }
-                    $this->pureChat->setPrefix("", $player);
-                }else{
-                    $this->pureChat->setPrefix("", $sender);
-                }
-            }else{
-                if(count($args) == 1) {
-                    if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
-                        $sender->sendMessage(TF::YELLOW."That player may not be online!");
-                        return true;
-                    }
-                    $this->pureChat->setPrefix("", $player);
-                }
-            }
-        }
-        if(strtolower($command) == "delsuffix") {
-            if($sender instanceof Player) {
-                if(count($args) == 1) {
-                    if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
-                        $sender->sendMessage(TF::YELLOW."That player may not be online!");
-                        return true;
-                    }
-                    $this->pureChat->setSuffix("", $player);
-                }else{
-                    $this->pureChat->setSuffix("", $sender);
-                }
-            }else{
-                if(count($args) == 1) {
-                    if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
-                        $sender->sendMessage(TF::YELLOW."That player may not be online!");
-                        return true;
-                    }
-                    $this->pureChat->setSuffix("", $player);
-                }
-            }
-        }
-        if(strtolower($command) == "giveprefix") {
-            if(count($args) >= 1) {
-                if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
-                    $sender->sendMessage(TF::YELLOW."That player may not be online!");
-                    return true;
-                }
-                $prefix = "";
-                for($i = 1;$i < count($args); $i++) {
-                    $prefix .= $args[$i];
-                }
-                $this->pureChat->setPrefix($prefix, $args[0]);
-            }
-        }
-        if(strtolower($command) == "givesuffix") {
-            if(count($args) >= 1) {
-                if(($player = $this->getServer()->getPlayer($args[0])) instanceof Player) {
-                    $sender->sendMessage(TF::YELLOW."That player may not be online!");
-                    return true;
-                }
-                $suffix = "";
-                for($i = 1;$i < count($args); $i++) {
-                    $suffix .= $args[$i];
-                }
-                $this->pureChat->setSuffix($suffix, $args[0]);
-            }
-        }
-        return true;
     }
     public function onDisable() {
-        $this->getLogger()->notice(TF::GREEN."Disabled!");
+        $this->getLogger()->info(TextFormat::RED . "NightVision UI Off");
     }
+    public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args) : bool {
+        switch($cmd->getName()){                    
+            case "nv":               
+                     $this->Menu($sender);                               
+            break;         
+            
+         }  
+        return true;                         
+    }
+   
+    public function Menu($sender){ 
+        $api = $this->getServer()->getPluginManager()->getPlugin("FormAPI");
+        $form = $api->createSimpleForm(function (Player $sender, int $data = null) { 
+            $result = $data;
+            if($result === null){
+                return true;
+            }             
+            switch($result){
+                case 0:
+       
+					
+                $eff = new EffectInstance(Effect::getEffect(Effect::NIGHT_VISION), 100 * 99999, 100, false);
+                $sender->addEffect($eff);
+                $sender->sendMessage("§a§lNightvision: On");
+                break;
+                    
+                case 1:
+                $sender->removeEffect(Effect::NIGHT_VISION);
+                $sender->sendMessage("§4§lNightvision: Off");
+                break;
+            }
+            
+            
+            });
+            $form->setTitle("§5§lMenu NightVision");
+            $form->addButton("§2§lEnable");
+            $form->addButton("§4§lDisable");
+            $form->addButton("§7§lBack");
+            $form->sendToPlayer($sender);
+            return $form;                                            
+    }
+ 
+  
+                                                                                                                                                                                                                                                                                          
 }
