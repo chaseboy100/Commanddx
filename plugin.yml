@@ -3,28 +3,66 @@ version: 1.4.0
 api: 3.9.3
 main: bigbozzlmao4035\Commanddx\Main
 author: bigbozzlmao3045
+name: NameTagMods
+author: "jasonwynn10"
+version: 0.1.0
 commands:
-  heal:
-    description: Heals you
-  feed:
-    description: Feeds you
-  food:
-    description: Gives you 8 bread
-  gmc:
-    description: Set gamemode to creative mode
-  gms:
-    description: Set gamemode to survival mode
-  gma:
-    description: Set gamemode to adventure mode  
-  gmspc:
-    description: Set gamemode to spectator mode
-  day:
-    description: Set time to day
-  night:
-     description: Set time to night
-  nv:
-     description: Gives you nightvision
-     aliases: ["nightvision", "light"]
-  cclear:
-     description: Clears the chat
-     aliases: [chatclear]
+  addprefix:
+    usage: "/addprefix [prefix]"
+    permission: EditTag.prefix.add
+    description: ""
+  addsuffix:
+    usage: "/addsuffix [suffix]"
+    permission: EditTag.suffix.add
+    description: ""
+  delprefix:
+    usage: "/delprefix [player]"
+    permission: EditTag.prefix.delete
+    description: ""
+  delsuffix:
+    usage: "/delsuffix [player]"
+    permission: EditTag.suffix.delete
+    description: ""
+  giveprefix:
+    usage: "/giveprefix <player> [prefix]"
+    permission: EditTag.other.prefix.add
+    description: ""
+  givesuffix:
+    usage: "/givesuffix <player> [suffix]"
+    permission: EditTag.other.suffix.add
+    description: ""
+permissions:
+  EditTag:
+    default:
+    children:
+      EditTag.prefix:
+        default: true
+        children:
+          EditTag.prefix.add:
+            default: true
+          EditTag.prefix.remove:
+            default: true
+      EditTag.suffix:
+        default: true
+        children:
+          EditTag.suffix.add:
+            default: true
+          EditTag.suffix.remove:
+            default: true
+      EditTag.other:
+        default: true
+        children:
+          EditTag.other.prefix:
+            default: true
+            children:
+              EditTag.other.prefix.add:
+                default: true
+              EditTag.other.prefix.remove:
+                default: true
+          EditTag.other.suffix:
+            default: true
+            children:
+              EditTag.other.suffix.add:
+                default: true
+              EditTag.other.suffix.remove:
+                default: true
